@@ -16,34 +16,24 @@
  * along with PDD.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ucl.pdd.dashboard
+package ucl.pdd.auth
 
-import com.google.inject.{Inject, Singleton}
-import com.twitter.finagle.http.Request
-import com.twitter.finatra.http.Controller
-import ucl.pdd.auth.Authenticator
+import com.google.inject.{Provides, Singleton}
+import com.twitter.inject.TwitterModule
 
 /**
- * This controller exposes two methods
- *
- * @param authenticator Authentication service.
+ * Guice module providing authentication services.
  */
-@Singleton
-final class AuthController @Inject()(authenticator: Authenticator) extends Controller {
+object AuthModule extends TwitterModule {
+  private val masterPasswordFlag = flag[String]("master_password", "Master password securing the access to the app")
 
-  import AuthController._
-
-  get("/auth") { req: Request =>
-    authenticator.authenticate(req)
+  @Provides
+  @Singleton
+  def providesAuthenticator(): Authenticator = {
+    // The cryptographic key pair is generated on-the-fly and not persisted. It means
+    // that JWT will not be valid across server restarts. This will oblige users to
+    // enter again their passwords, but this may also be used as an emergency measure
+    // to force logout all users.
+    Authenticator.newAuthenticator(masterPasswordFlag.get)
   }
-
-  post("/auth") { req: AuthRequest =>
-    authenticator.authenticate(req.password)
-  }
-}
-
-object AuthController {
-
-  case class AuthRequest(password: String)
-
 }

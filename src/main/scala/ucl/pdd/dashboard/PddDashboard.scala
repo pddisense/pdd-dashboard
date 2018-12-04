@@ -22,12 +22,15 @@ import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
+import ucl.pdd.auth.AuthModule
 import ucl.pdd.monitoring.LoggingConfigurator
 
 object PddDashboardMain extends PddDashboard
 
 class PddDashboard extends HttpServer with LoggingConfigurator {
   override def modules = Seq(ApiClientModule, AuthModule)
+
+  override def jacksonModule = PddJacksonModule
 
   override def allowUndefinedFlags = false
 

@@ -39,7 +39,7 @@ before_install:
 script:
 - yarn install
 - yarn build
-- sbt compile test
+- sbt test
 
 before_cache:
 # Cleanup the cached directories to avoid unnecessary cache updates

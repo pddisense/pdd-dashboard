@@ -16,7 +16,7 @@
  * along with PDD.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ucl.pdd.dashboard
+package ucl.pdd.auth
 
 import com.twitter.finagle.http.Request
 import ucl.testing.UnitSpec

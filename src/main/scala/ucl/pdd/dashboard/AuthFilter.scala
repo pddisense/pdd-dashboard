@@ -22,6 +22,7 @@ import com.google.inject.{Inject, Singleton}
 import com.twitter.finagle.http.{Request, Response, Status}
 import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.util.Future
+import ucl.pdd.auth.Authenticator
 
 /**
  * Authentication filter checking that the master password has been provided as a header.

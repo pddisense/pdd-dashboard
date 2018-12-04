@@ -16,7 +16,7 @@
  * along with PDD.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ucl.pdd.dashboard
+package ucl.pdd.auth
 
 import java.security.spec.ECGenParameterSpec
 import java.security.{KeyPair, KeyPairGenerator, SecureRandom, Security}
@@ -35,6 +35,7 @@ import scala.util.{Failure, Success}
  *                            no authentication will be performed and calls will be allowed.
  */
 final class Authenticator(keyPair: KeyPair, maybeMasterPassword: Option[String]) {
+  private[this] val algorithms = Seq(JwtAlgorithm.ES512)
 
   import Authenticator._
 
@@ -46,7 +47,7 @@ final class Authenticator(keyPair: KeyPair, maybeMasterPassword: Option[String])
   def authenticate(request: Request): Response = request.authorization match {
     case Some(header) if header.startsWith("Bearer ") =>
       val accessToken = header.drop(7)
-      Jwt.decode(accessToken, keyPair.getPublic, Seq(JwtAlgorithm.ES512)) match {
+      Jwt.decode(accessToken, keyPair.getPublic, algorithms) match {
         case Success(_) => Response(authenticated = true, Some(accessToken))
         case Failure(_) => Unauthorized
       }
@@ -63,7 +64,7 @@ final class Authenticator(keyPair: KeyPair, maybeMasterPassword: Option[String])
   def authenticate(password: String): Response = {
     val isPasswordValid = maybeMasterPassword.forall(_ == password)
     if (isPasswordValid) {
-      val accessToken = Jwt.encode("""{}""", keyPair.getPrivate, JwtAlgorithm.ES512)
+      val accessToken = Jwt.encode("""{}""", keyPair.getPrivate, algorithms.head)
       Response(authenticated = true, Some(accessToken))
     } else {
       Unauthorized
