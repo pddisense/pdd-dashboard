@@ -23,11 +23,8 @@ import com.twitter.app.App
 import org.slf4j.{Logger, LoggerFactory}
 
 /**
- * Trait helping with configuring logging support for Twitter applications.
- *
- * First, it configures Logback, and allows to change the default logging level
- * via a flag. Second, it configures Sentry (iff the `SENTRY_DSN` environment
- * variable is defined), which is integrated into Logback.
+ * Trait helping with configuring logging support for Twitter applications. It configures
+ * Logback, and allows to change the default logging level via a flag.
  */
 trait LoggingConfigurator {
   this: App =>
@@ -36,18 +33,6 @@ trait LoggingConfigurator {
     "log_level",
     "INFO",
     "Default root logging level. Values values are: 'ALL', 'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'OFF'.")
-
-  // Sentry configuration. This is done in the constructor and not an `init` block because
-  // Sentry is integrated with Logback and the latter is initialised very soon.
-  {
-    // Used to differentiate between libraries and our own code.
-    // https://docs.sentry.io/clients/java/config/#in-application-stack-frames
-    sys.props("sentry.stacktrace.app.packages") = "ucl.pdd"
-
-    // Set the environment. The same environment variable is used to configure DataDog's
-    // environment as well.
-    sys.props("sentry.environment") = sys.env.getOrElse("ENVIRONMENT", "devel")
-  }
 
   premain {
     // Programmatically set the root logging level. We cannot do it in an `init` block

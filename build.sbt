@@ -25,15 +25,10 @@ scalaVersion := "2.12.6"
 resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= Seq(
-  "com.twitter" %% "util-core" % "18.11.0",
-  "com.twitter" %% "inject-app" % "18.11.0",
-  "com.twitter" %% "finagle-stats" % "18.11.0",
   "com.twitter" %% "finatra-http" % "18.11.0",
   "com.twitter" %% "finatra-httpclient" % "18.11.0",
   "com.pauldijou" %% "jwt-core" % "0.16.0",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
-  "io.sentry" % "sentry-logback" % "1.6.4",
-  "com.datadoghq" % "java-dogstatsd-client" % "2.5",
   "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
 
