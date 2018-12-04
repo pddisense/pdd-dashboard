@@ -19,9 +19,9 @@
 const webpack = require('webpack');
 const path = require('path');
 
-const outputPath = path.resolve(__dirname, 'pdd-dashboard/src/main/resources');
+const outputPath = path.resolve(__dirname, 'src/main/resources');
 const config = {
-  entry: './pdd-dashboard/src/main/node/index.js',
+  entry: './src/main/node/index.js',
   output: {
     path: outputPath,
     filename: '[name].bundle.js',
@@ -54,7 +54,6 @@ module.exports = (env, args) => {
   if (args.mode === 'development') {
     config.mode = 'development';
   } else {
-    env.SENTRY_DSN = 'https://3b359301775f40f992827f8d685cbcb4@sentry.io/302349';
     config.mode = 'production';
   }
 
