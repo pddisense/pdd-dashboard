@@ -1,0 +1,56 @@
+# PDD is a platform for privacy-preserving Web searches collection.
+# Copyright (C) 2016-2018 Vincent Primault <v.primault@ucl.ac.uk>
+#
+# PDD is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PDD is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with PDD.  If not, see <http://www.gnu.org/licenses/>.
+
+language: scala
+scala:
+- 2.12.6
+
+services:
+- docker
+- mysql
+
+cache:
+  yarn: true
+  directories:
+  - $HOME/.ivy2/cache
+  - $HOME/.sbt
+
+before_install:
+# There is no way to have multiple languages at the same time using Travis.
+# Fortunately, nvm is available to install a Node environment.
+- nvm install 10
+- nvm use 10
+# After installing Node, we manually install Yarn.
+- curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.9.4
+- export PATH="$HOME/.yarn/bin:$PATH"
+
+script:
+- yarn install
+- yarn build
+- sbt compile test
+
+before_cache:
+# Cleanup the cached directories to avoid unnecessary cache updates
+- find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+- find $HOME/.sbt        -name "*.lock"               -print -delete
+
+# Push Docker image.
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: ./bin/travis-deploy.sh
+  on:
+    branch: master
