@@ -20,7 +20,6 @@ scala:
 
 services:
 - docker
-- mysql
 
 cache:
   yarn: true
